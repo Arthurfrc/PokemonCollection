@@ -1,0 +1,8 @@
+// app/(tabs)/collection.tsx
+
+
+import { Text } from 'react-native';
+
+export default function CollectionScreen() {
+  return <Text>Collection</Text>;
+}
