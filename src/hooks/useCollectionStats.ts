@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getCards } from "@/services/supabase/cardsService";
-import { Card } from "@/types/card";
+import { Card } from "@/types/cards";
 
 export interface CollectionStats {
   totalCards: number;

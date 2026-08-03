@@ -1,13 +1,13 @@
 // src/navigation/RootNavigator.tsx
 
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import TabNavigator from "@/navigation/TabNavigator";
+import TabNavigator, {TabParamList} from "@/navigation/TabNavigator";
 import CardFormScreen from "@/screens/CardFormScreen";
 
 export type RootStackParamList = {
-  Tabs: undefined;
+  Tabs: NavigatorScreenParams<TabParamList>;
   CardForm: { cardId?: string };
 };
 

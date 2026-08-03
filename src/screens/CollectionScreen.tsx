@@ -3,12 +3,16 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { View, FlatList, Text, StyleSheet, ActivityIndicator, Pressable, Alert, TextInput } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, RouteProp } from "@react-navigation/native";
+import { TabParamList } from "@/navigation/TabNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { getCards, deleteCard } from "@/services/supabase/cardsService";
 import { Card } from "@/types/cards";
 import { RootStackParamList } from "@/navigation/RootNavigator";
 import { cardCodeMatches } from "@/utils/cardCode";
+import { useToast } from "@/hooks/useToast";
+import Toast from "@/components/Toast";
+import { useRoute } from "@react-navigation/native";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -18,13 +22,22 @@ export default function CollectionScreen() {
     const [loading, setLoading] = useState(true);
     const [nameQuery, setNameQuery] = useState("");
     const [codeQuery, setCodeQuery] = useState("");
-
+    const { message, showToast, hideToast } = useToast();
+    const route = useRoute<RouteProp<TabParamList, "Collection">>();
     const loadCards = useCallback(() => {
         setLoading(true);
         getCards().then(setCards).finally(() => setLoading(false));
     }, []);
 
-    useFocusEffect(loadCards);
+    useFocusEffect(
+        useCallback(() => {
+            loadCards();
+            if (route.params?.toastMessage) {
+                showToast(route.params.toastMessage);
+                navigation.setParams({ toastMessage: undefined });
+            }
+        }, [route.params])
+    );
 
     const filteredCards = useMemo(() => {
         const nameFilter = nameQuery.trim().toLowerCase();
@@ -95,6 +108,7 @@ export default function CollectionScreen() {
             <Pressable style={styles.fab} onPress={() => navigation.navigate("CardForm", {})}>
                 <Ionicons name="add" size={28} color="#fff" />
             </Pressable>
+            <Toast message={message} onHide={hideToast} />
         </View>
     );
 }

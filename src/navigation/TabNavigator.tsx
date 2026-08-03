@@ -7,7 +7,14 @@ import CollectionScreen from "@/screens/CollectionScreen";
 import DashboardScreen from "@/screens/DashboardScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
 
-const Tab = createBottomTabNavigator();
+export type TabParamList = {
+  Home: undefined;
+  Collection: { toastMessage?: string } | undefined;
+  Dashboard: undefined;
+  Settings: undefined;
+};
+
+const Tab = createBottomTabNavigator<TabParamList>();
 
 export default function TabNavigator() {
   return (

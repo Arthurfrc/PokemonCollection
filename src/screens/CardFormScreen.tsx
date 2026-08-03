@@ -1,22 +1,28 @@
 // src/screens/CardFormScreen.tsx
 
 import React, { useEffect, useState } from "react";
-import { View, TextInput, Text, StyleSheet, ScrollView, Pressable, Alert } from "react-native";
+import { View, TextInput, Text, StyleSheet, ScrollView, Pressable, Alert, Image } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { createCard, updateCard, deleteCard, getCardById } from "@/services/supabase/cardsService";
 import { CardCondition } from "@/types/cards";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/navigation/RootNavigator";
 import { Ionicons } from "@expo/vector-icons";
 
 const CONDITIONS: CardCondition[] = ["N", "SP", "MP", "HP", "NM"];
 
 type FormRoute = RouteProp<RootStackParamList, "CardForm">;
+type FormNav = NativeStackNavigationProp<RootStackParamList>;
 
 export default function CardFormScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<FormNav>();
   const route = useRoute<FormRoute>();
   const cardId = route.params?.cardId;
   const isEditing = !!cardId;
+
+  function goToCollectionWithToast(toastMessage: string) {
+    navigation.navigate("Tabs", { screen: "Collection", params: { toastMessage } });
+  }
 
   const [pokemonName, setPokemonName] = useState("");
   const [collectionName, setCollectionName] = useState("");
@@ -72,10 +78,11 @@ export default function CardFormScreen() {
     try {
       if (isEditing) {
         await updateCard(cardId!, buildPayload());
+        goToCollectionWithToast("Carta atualizada!");
       } else {
         await createCard(buildPayload());
+        goToCollectionWithToast("Carta salva!");
       }
-      navigation.goBack();
     } catch (err) {
       Alert.alert("Erro ao salvar", String(err));
     } finally {
@@ -92,7 +99,7 @@ export default function CardFormScreen() {
         onPress: async () => {
           try {
             await deleteCard(cardId!);
-            navigation.goBack();
+            goToCollectionWithToast("Carta excluída!");
           } catch (err) {
             Alert.alert("Erro ao excluir", String(err));
           }
@@ -146,6 +153,10 @@ export default function CardFormScreen() {
       <Text style={styles.label}>URL da imagem</Text>
       <TextInput style={styles.input} value={imageUrl} onChangeText={setImageUrl} placeholder="https://..." autoCapitalize="none" />
 
+      {imageUrl.trim().length > 0 && (
+        <Image source={{ uri: imageUrl }} style={styles.preview} resizeMode="contain" onError={() => Alert.alert("Aviso", "Não foi possível carregar essa imagem.")} />
+      )}
+
       <Pressable style={styles.saveButton} onPress={handleSave} disabled={saving}>
         <Ionicons name="checkmark-circle" size={18} color="#fff" style={styles.buttonIcon} />
         <Text style={styles.saveButtonText}>{saving ? "Salvando..." : "Salvar carta"}</Text>
@@ -181,4 +192,5 @@ const styles = StyleSheet.create({
   buttonIcon: { marginRight: 6 },
   saveButtonText: { color: "#fff", fontWeight: "700", fontSize: 15 },
   deleteButtonText: { color: "#e53935", fontWeight: "700", fontSize: 15 },
+  preview: { width: "100%", height: 180, borderRadius: 8, marginTop: 10, backgroundColor: "#f2f4f8" },
 });
