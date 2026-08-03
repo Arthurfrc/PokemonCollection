@@ -1,7 +1,7 @@
 // src/navigation/TabNavigator.tsx
 
-import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "@/screens/HomeScreen";
 import CollectionScreen from "@/screens/CollectionScreen";
 import DashboardScreen from "@/screens/DashboardScreen";
@@ -11,11 +11,25 @@ const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Collection" component={CollectionScreen} />
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: true,
+        tabBarIcon: ({ color, size }) => {
+          const icons: Record<string, keyof typeof Ionicons.glyphMap> = {
+            Home: "home",
+            Collection: "albums",
+            Dashboard: "stats-chart",
+            Settings: "settings",
+          };
+          return <Ionicons name={icons[route.name]} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: "#2f6fed",
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} options={{ title: "Início" }} />
+      <Tab.Screen name="Collection" component={CollectionScreen} options={{ title: "Coleção" }} />
+      <Tab.Screen name="Dashboard" component={DashboardScreen} options={{ title: "Dashboard" }} />
+      <Tab.Screen name="Settings" component={SettingsScreen} options={{ title: "Ajustes" }} />
     </Tab.Navigator>
   );
 }

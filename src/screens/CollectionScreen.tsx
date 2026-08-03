@@ -2,6 +2,7 @@
 
 import React, { useCallback, useMemo, useState } from "react";
 import { View, FlatList, Text, StyleSheet, ActivityIndicator, Pressable, Alert, TextInput } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { getCards, deleteCard } from "@/services/supabase/cardsService";
@@ -92,7 +93,7 @@ export default function CollectionScreen() {
                 ListEmptyComponent={<Text style={styles.empty}>Nenhuma carta encontrada.</Text>}
             />
             <Pressable style={styles.fab} onPress={() => navigation.navigate("CardForm", {})}>
-                <Text style={styles.fabText}>+</Text>
+                <Ionicons name="add" size={28} color="#fff" />
             </Pressable>
         </View>
     );
@@ -111,5 +112,4 @@ const styles = StyleSheet.create({
     value: { fontSize: 14, fontWeight: "700", color: "#2f6fed" },
     empty: { textAlign: "center", color: "#999", marginTop: 40 },
     fab: { position: "absolute", right: 20, bottom: 20, width: 56, height: 56, borderRadius: 28, backgroundColor: "#2f6fed", alignItems: "center", justifyContent: "center", elevation: 4 },
-    fabText: { color: "#fff", fontSize: 28, lineHeight: 28 },
 });

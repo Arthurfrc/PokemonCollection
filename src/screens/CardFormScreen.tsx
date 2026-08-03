@@ -6,6 +6,7 @@ import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { createCard, updateCard, deleteCard, getCardById } from "@/services/supabase/cardsService";
 import { CardCondition } from "@/types/cards";
 import { RootStackParamList } from "@/navigation/RootNavigator";
+import { Ionicons } from "@expo/vector-icons";
 
 const CONDITIONS: CardCondition[] = ["N", "SP", "MP", "HP", "NM"];
 
@@ -146,11 +147,13 @@ export default function CardFormScreen() {
       <TextInput style={styles.input} value={imageUrl} onChangeText={setImageUrl} placeholder="https://..." autoCapitalize="none" />
 
       <Pressable style={styles.saveButton} onPress={handleSave} disabled={saving}>
+        <Ionicons name="checkmark-circle" size={18} color="#fff" style={styles.buttonIcon} />
         <Text style={styles.saveButtonText}>{saving ? "Salvando..." : "Salvar carta"}</Text>
       </Pressable>
 
       {isEditing && (
         <Pressable style={styles.deleteButton} onPress={handleDelete}>
+          <Ionicons name="trash" size={18} color="#e53935" style={styles.buttonIcon} />
           <Text style={styles.deleteButtonText}>Excluir carta</Text>
         </Pressable>
       )}
@@ -173,8 +176,9 @@ const styles = StyleSheet.create({
   qtyButton: { width: 40, height: 40, borderRadius: 8, backgroundColor: "#f2f4f8", alignItems: "center", justifyContent: "center" },
   qtyButtonText: { fontSize: 20, fontWeight: "700" },
   qtyInput: { flex: 1, borderWidth: 1, borderColor: "#ccc", borderRadius: 8, textAlign: "center", paddingVertical: 10, fontSize: 15 },
-  saveButton: { backgroundColor: "#2f6fed", borderRadius: 8, paddingVertical: 14, alignItems: "center", marginTop: 24 },
+  saveButton: { flexDirection: "row", backgroundColor: "#2f6fed", borderRadius: 8, paddingVertical: 14, alignItems: "center", justifyContent: "center", marginTop: 24 },
+  deleteButton: { flexDirection: "row", borderRadius: 8, paddingVertical: 14, alignItems: "center", justifyContent: "center", marginTop: 12, borderWidth: 1, borderColor: "#e53935" },
+  buttonIcon: { marginRight: 6 },
   saveButtonText: { color: "#fff", fontWeight: "700", fontSize: 15 },
-  deleteButton: { borderRadius: 8, paddingVertical: 14, alignItems: "center", marginTop: 12, borderWidth: 1, borderColor: "#e53935" },
   deleteButtonText: { color: "#e53935", fontWeight: "700", fontSize: 15 },
 });
